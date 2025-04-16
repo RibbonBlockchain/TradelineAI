@@ -173,6 +173,17 @@ class AIAgent(db.Model):
     wallet_balance = db.Column(db.Float, default=0.0)  # Stablecoin balance in USD
     wallet_last_refresh = db.Column(db.DateTime)  # Last time the wallet balance was refreshed
     
+    # BASE Name Service (BNS) identification
+    bns_identifier = db.Column(db.String(256), unique=True, index=True)  # Format: [agent-name].[purpose-code].[entity-code].base
+    purpose_code = db.Column(db.String(20))  # Standardized purpose code (e.g., re01, tr05)
+    entity_code = db.Column(db.String(50))  # Entity/organization code
+    
+    # Agent-to-Agent (A2A) Protocol Integration
+    a2a_enabled = db.Column(db.Boolean, default=False)  # Whether agent participates in A2A protocol
+    a2a_metadata = db.Column(db.Text)  # JSON string for A2A capabilities and configuration
+    a2a_last_seen = db.Column(db.DateTime)  # Last time the agent was active in A2A network
+    a2a_interaction_count = db.Column(db.Integer, default=0)  # Count of A2A protocol interactions
+    
     # Relationship to tradeline allocations
     tradeline_allocations = db.relationship('AIAgentAllocation', backref='agent', lazy='dynamic')
     # Relationship to transactions

@@ -158,6 +158,15 @@ class AIAgent(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text)
+    
+    # A2A Protocol integration fields
+    a2a_enabled = db.Column(db.Boolean, default=False)
+    bns_identifier = db.Column(db.String(256), unique=True, index=True)
+    a2a_metadata = db.Column(db.Text)
+    a2a_last_seen = db.Column(db.DateTime)
+    a2a_interaction_count = db.Column(db.Integer, default=0)
+    purpose_code = db.Column(db.String(20))
+    entity_code = db.Column(db.String(50))
     created_date = db.Column(db.DateTime, default=datetime.utcnow)
     is_active = db.Column(db.Boolean, default=True)
     purpose = db.Column(db.String(200))

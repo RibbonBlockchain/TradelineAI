@@ -270,6 +270,119 @@ try:
         
 except ImportError as e:
     app.logger.warning(f"Could not import API Gateway module: {e}")
+
+# Register A2A Protocol Integration
+try:
+    from modules.a2a_integration import a2a_blueprint, a2a_messages
+    app.register_blueprint(a2a_blueprint)
+    app.register_blueprint(a2a_messages)
+    app.logger.info("A2A Protocol Integration registered")
+    
+    # Add well-known Agent Card endpoint for agent discovery
+    @app.route('/.well-known/agent.json')
+    def agent_card():
+        """Return the Agent Card for the requested agent"""
+        import json
+        from models import get_ai_agent_model
+        
+        # Get AI Agent model
+        AIAgent = get_ai_agent_model()
+        
+        # Get the agent identifier from the request, could be BNS or agent ID
+        agent_id = request.args.get('agent_id')
+        bns_id = request.args.get('bns_id')
+        
+        if not agent_id and not bns_id:
+            return jsonify({"error": "Missing agent_id or bns_id parameter"}), 400
+            
+        # Get the agent by ID or BNS identifier
+        if agent_id:
+            agent = AIAgent.query.get(agent_id)
+        else:
+            agent = AIAgent.query.filter_by(bns_identifier=bns_id).first()
+            
+        if not agent:
+            return jsonify({"error": "Agent not found"}), 404
+            
+        # Ensure the agent has A2A enabled
+        if not agent.a2a_enabled:
+            return jsonify({"error": "Agent does not support A2A protocol"}), 403
+            
+        # Build the Agent Card
+        agent_card = {
+            "name": agent.name,
+            "description": agent.description,
+            "purpose": agent.purpose,
+            "version": "1.0",
+            "protocol": "a2a",
+            "capabilities": ["financial_transactions", "credit_utilization"],
+            "identity": {
+                "bns": agent.bns_identifier,
+                "wallet": agent.wallet_address,
+                "network": agent.wallet_network
+            },
+            "financial": {
+                "purpose_code": agent.purpose_code,
+                "entity_code": agent.entity_code,
+                "credit_score": agent.credit_score,
+                "risk_profile": agent.risk_profile
+            },
+            "endpoints": {
+                "messages": f"/a2a/messages/{agent.bns_identifier}",
+                "status": f"/a2a/status/{agent.bns_identifier}"
+            },
+            "authentication": {
+                "type": "blockchain_signature",
+                "required": True
+            }
+        }
+        
+        # Add custom metadata if available
+        if agent.a2a_metadata:
+            try:
+                custom_metadata = json.loads(agent.a2a_metadata)
+                if isinstance(custom_metadata, dict):
+                    # Add custom fields to agent card
+                    for key, value in custom_metadata.items():
+                        if key not in agent_card:
+                            agent_card[key] = value
+            except:
+                # If metadata is invalid JSON, ignore it
+                pass
+                
+        # Set proper content type for JSON and CORS headers
+        response = jsonify(agent_card)
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Access-Control-Allow-Methods'] = 'GET'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+        
+        return response
+    
+    @app.route('/a2a-dashboard')
+    @login_required
+    def a2a_dashboard():
+        """View and manage A2A protocol integration"""
+        # Import here to avoid circular imports
+        from models import get_ai_agent_model
+        from datetime import datetime, timedelta
+        
+        # Get AI Agent model
+        AIAgent = get_ai_agent_model()
+        
+        # Get A2A-enabled agents
+        a2a_agents = AIAgent.query.filter_by(a2a_enabled=True).all()
+        
+        # Placeholder for recent A2A interactions (in a real app, this would come from a database)
+        recent_interactions = []
+        
+        # Return the template with data
+        return render_template('a2a_dashboard/index.html', 
+                               a2a_agents=a2a_agents,
+                               recent_interactions=recent_interactions,
+                               active_page='a2a_dashboard')
+    
+except ImportError as e:
+    app.logger.warning(f"Could not import A2A Integration module: {e}")
     
     # Add fallback routes if API Gateway is not available
     @app.route('/api-dashboard')
@@ -2069,6 +2182,7 @@ def create_agent():
     from flask_wtf import FlaskForm
     from modules.crypto_wallet import CryptoWalletManager
     from datetime import datetime
+    import json
     
     form = FlaskForm()
     
@@ -2090,6 +2204,30 @@ def create_agent():
                 wallet_address = f"0x{hash(datetime.utcnow().isoformat())&0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}"
                 app.logger.info(f"Generated fallback wallet address: {wallet_address}")
             
+            # Generate BNS identifier based on name and purpose
+            bns_id = f"{name.lower().replace(' ', '-')}.agent.base"
+            
+            # Determine the purpose code based on the agent's purpose
+            purpose_code = 'GEN'  # Default general purpose
+            if 'shopping' in purpose.lower() or 'retail' in purpose.lower():
+                purpose_code = 'SHOP'
+            elif 'property' in purpose.lower() or 'real estate' in purpose.lower():
+                purpose_code = 'PROP'
+            elif 'transport' in purpose.lower() or 'vehicle' in purpose.lower():
+                purpose_code = 'TRAN'
+            elif 'finance' in purpose.lower() or 'investment' in purpose.lower():
+                purpose_code = 'FIN'
+            
+            # Determine entity code based on risk profile
+            entity_code = 'AGENT'
+            if risk_profile == 'Low':
+                entity_code = 'AGENT-L'
+            elif risk_profile == 'Medium':
+                entity_code = 'AGENT-M'
+            elif risk_profile == 'High':
+                entity_code = 'AGENT-H'
+                
+            # Create agent with A2A enabled by default
             agent = AIAgent(
                 owner_id=current_user.id,
                 name=name,
@@ -2098,7 +2236,24 @@ def create_agent():
                 risk_profile=risk_profile,
                 wallet_address=wallet_address,
                 wallet_network=network,
-                wallet_created_date=datetime.utcnow()
+                wallet_created_date=datetime.utcnow(),
+                # A2A Protocol Integration fields
+                a2a_enabled=True,
+                bns_identifier=bns_id,
+                purpose_code=purpose_code,
+                entity_code=entity_code,
+                a2a_metadata=json.dumps({
+                    "name": name,
+                    "description": description,
+                    "purpose": purpose,
+                    "capabilities": ["financial_transactions", "credit_utilization"],
+                    "protocol_version": "1.0",
+                    "identity": {
+                        "bns": bns_id,
+                        "wallet": wallet_address
+                    }
+                }),
+                a2a_last_seen=datetime.utcnow()
             )
             
             db.session.add(agent)

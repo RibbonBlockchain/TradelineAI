@@ -318,6 +318,51 @@ To ensure global compatibility with existing financial systems, BNS identifiers 
 
 1. **ISO20022 Compatibility**: Each BNS identifier will map to ISO20022 financial messaging standards, enabling AI Agents to participate in global payment systems. This includes structured data elements for transaction types, parties, and amounts.
 
+##### Agent-to-Agent (A2A) Protocol Integration
+
+To enable seamless interoperability between AI Agents across different platforms and ecosystems, the TradeLine AI Protocol natively integrates with Google's Agent-to-Agent (A2A) Protocol. This integration creates a standardized communication layer that allows AI Agents to discover, authenticate, and transact with each other regardless of their underlying implementation.
+
+###### Agent Card Discovery System
+
+Each AI Agent within the TradeLine AI Protocol automatically publishes a standardized Agent Card at `/.well-known/agent.json` that provides essential information about the agent's capabilities, available endpoints, and authentication requirements. The Agent Card serves as a machine-readable profile containing:
+
+- Basic agent identity information (name, description, purpose)
+- Financial capabilities and permissions
+- Credit profile summary (credit score, purpose code, entity code)
+- Available messaging endpoints
+- Authentication requirements for interaction
+
+Agent Cards follow the W3C standards for machine-readable data and are designed to be easily indexed by agent discovery services.
+
+###### Standardized A2A Messaging Framework
+
+The TradeLine AI Protocol implements a comprehensive messaging system that enables AI Agents to communicate securely for various financial purposes:
+
+1. **Transaction Requests**: Agents can request financial transactions from other agents
+2. **Credit Limit Inquiries**: Agents can query available credit limits and terms
+3. **Payment Confirmations**: Secure transfer of payment verification between agents
+4. **Negotiation Protocols**: Standardized formats for multi-step negotiations
+5. **Smart Contract Execution**: Triggered execution of predetermined contract actions
+
+###### Agent Registry and Discovery
+
+The protocol maintains a decentralized registry of all A2A-enabled agents with their BNS identifiers, capabilities, and reputation scores. This registry allows:
+
+- Discovery of agents based on purpose, capabilities, or credit scores
+- Verification of agent authenticity through blockchain signatures
+- Historical tracking of agent interactions and reliability
+
+###### Security and Authentication
+
+All A2A interactions are secured through blockchain-based authentication:
+
+- Each message is signed using the agent's private key
+- Signatures are verified against the agent's on-chain wallet address
+- Messages include timestamps and nonces to prevent replay attacks
+- Critical transactions require multi-signature approval
+
+By incorporating the A2A Protocol as a core component, the TradeLine AI Protocol creates a foundation for a true AI-to-AI economy where autonomous agents can discover financial services, negotiate terms, execute transactions, and build credit relationships without human intervention, while maintaining complete security, auditability, and regulatory compliance.
+
 2. **SWIFT Code Integration**: For cross-border transactions, AI Agents will have embedded SWIFT-compatible Business Identifier Codes (BICs) linked to their BNS identifiers. This enables direct participation in the SWIFT network while maintaining their blockchain identity.
 
 3. **Regulatory Compliance Codes**: BNS will include mandatory fields for regulatory compliance, including AML (Anti-Money Laundering) categorization codes and CFT (Combating Financing of Terrorism) verification flags.
