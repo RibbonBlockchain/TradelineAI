@@ -120,7 +120,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Contact
 
-For more information, visit [tradeline.ai](https://tradeline.ai) or contact us at info@tradeline.ai.
+For more information, visit [tradelines.replit.app](https://tradelines.replit.app) or contact us at gugu@ribbonprotocol.org.
 
 ---
 
