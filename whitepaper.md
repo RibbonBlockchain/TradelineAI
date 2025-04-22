@@ -106,12 +106,13 @@ TradeLine AI is designed as a comprehensive protocol layer operating on the Base
 
 #### 1. Credit Delegation Protocol (CDP)
 
-The Credit Delegation Protocol establishes standardized methods for human tradeline owners to delegate credit access to AI Agents through secure smart contracts. Key features include:
+The Credit Delegation Protocol establishes standardized methods for human tradeline owners to delegate credit access to AI Agents through secure smart contracts. The protocol is built in partnership with the Coinbase Developer Platform, enabling genuine blockchain-based financial operations. Key features include:
 
 - **Delegation Parameters**: Standardized fields for credit limit, duration, utilization constraints, and permissible transaction categories
 - **Revocation Mechanisms**: Emergency circuit breakers allowing owners to instantly revoke delegated access
 - **Nested Delegation**: Framework for AI Agents to sub-delegate portions of their credit access (with owner approval)
 - **Cross-Chain Compatibility**: Interoperability standards to expand beyond Base to other EVM-compatible chains
+- **CDP Integration**: Native integration with the Coinbase Developer Platform for reliable blockchain operations and transaction execution
 
 ##### Smart Contract Implementation
 
@@ -304,13 +305,13 @@ BNS will serve as the primary identity layer for AI Agents, providing human-read
 Each AI Agent operating within the TradeLine AI Protocol will be assigned a unique BNS identifier following this format:
 
 ```
-[agent-name].[purpose-code].[entity-code].base
+[agent-name].[purpose-code].[entity-code].eth
 ```
 
 For example:
-- `rental-manager.re01.acme.base` (AI Agent managing rental properties)
-- `fleet-operator.tr05.uber.base` (AI Agent operating vehicle fleets)
-- `supply-chain.sc03.walmart.base` (AI Agent handling supply chain operations)
+- `rental-manager.re01.acme.eth` (AI Agent managing rental properties)
+- `fleet-operator.tr05.uber.eth` (AI Agent operating vehicle fleets)
+- `supply-chain.sc03.walmart.eth` (AI Agent handling supply chain operations)
 
 ##### Financial Messaging Integration
 
@@ -389,6 +390,52 @@ The implementation of this identification framework represents a strategic oppor
 4. **Regulatory Compliance**: The embedded compliance elements position BASE as the regulatory-friendly Layer 2 solution for institutional adoption.
 
 The BNS framework will lay the groundwork for the $15.7 trillion economic activity projected for AI Agents by 2030, providing the identification infrastructure necessary for this economic transition.
+
+#### Coinbase Developer Platform Integration
+
+The TradeLine AI Protocol has established a strategic integration with the Coinbase Developer Platform (CDP) to enable native blockchain functionality and genuine financial operations for AI Agents. This integration provides secure, reliable access to blockchain networks and transaction capabilities, ensuring that AI Agents can participate in real economic activities on the BASE blockchain.
+
+##### Core CDP Integration Components
+
+1. **Blockchain Transaction Infrastructure**
+   - Secure API-based access to BASE blockchain through Coinbase's robust infrastructure
+   - Reliable transaction submission and confirmation for AI Agent operations
+   - Real-time transaction status monitoring and verification
+   - Network fee optimization for cost-effective operations
+
+2. **Wallet Management System**
+   - Secure wallet creation and management for AI Agents
+   - Multi-network support (mainnet and testnet environments)
+   - Hierarchical deterministic wallet generation
+   - Enhanced security protections for private keys and signing operations
+
+3. **Asset Operations Framework**
+   - USDC and ETH transaction capabilities
+   - Token balance tracking and management
+   - Cross-asset swap functionality
+   - Transaction history and reporting
+
+4. **Smart Contract Interaction Layer**
+   - Automated interaction with protocol smart contracts
+   - Event monitoring for contract state changes
+   - Function call optimization for gas efficiency
+   - Contract verification and validation
+
+##### Implementation Requirements
+
+The CDP integration requires secure API credentials (CDP_API_KEY and CDP_API_SECRET) to enable the full suite of blockchain capabilities, ensuring that all operations are authenticated and authorized properly within the protocol's security framework. These credentials are managed through a secure environment variable system with strictly controlled access.
+
+##### Strategic Advantages
+
+This integration represents a critical advancement in the protocol's ability to empower AI Agents with genuine financial capabilities, bypassing simulated or mock transactions in favor of actual blockchain-based operations. Through the Coinbase Developer Platform, AI Agents can now autonomously:
+
+1. Execute confirmed transactions on the BASE blockchain
+2. Manage real digital asset holdings including USDC and ETH
+3. Verify transaction status and finality through trusted network confirmation
+4. Interact with smart contracts for complex financial operations
+5. Build verifiable on-chain transaction histories
+
+The CDP integration forms an essential component of the protocol's vision to create a truly autonomous economic infrastructure for AI Agents, enabling them to independently manage financial resources, execute transactions, and build credit histories in a secure, scalable, and regulatory-compliant manner.
 
 #### Machine Learning Models
 

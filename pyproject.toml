@@ -28,4 +28,9 @@ dependencies = [
     "python-dotenv>=1.1.0",
     "openai>=1.74.0",
     "svglib>=1.5.1",
+    "langgraph>=0.3.31",
+    "coinbase-agentkit>=0.4.0",
+    "coinbase-agentkit-langchain>=0.3.0",
+    "langchain-core>=0.3.55",
+    "langchain-openai>=0.3.14",
 ]

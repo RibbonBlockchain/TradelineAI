@@ -277,6 +277,20 @@ try:
     app.register_blueprint(a2a_blueprint)
     app.register_blueprint(a2a_messages)
     app.logger.info("A2A Protocol Integration registered")
+except ImportError as e:
+    app.logger.warning(f"Could not import A2A Protocol Integration module: {e}")
+except Exception as e:
+    app.logger.error(f"Error registering A2A Protocol Integration: {e}")
+
+# Register Coinbase Developer Platform (CDP) Integration
+try:
+    from modules.cdp_integration import register_cdp_routes
+    register_cdp_routes(app)
+    app.logger.info("CDP Integration registered")
+except ImportError as e:
+    app.logger.warning(f"Could not import CDP Integration module: {e}")
+except Exception as e:
+    app.logger.error(f"Error registering CDP Integration: {e}")
     
     # Add well-known Agent Card endpoint for agent discovery
     @app.route('/.well-known/agent.json')
@@ -358,7 +372,7 @@ try:
         
         return response
     
-    @app.route('/a2a-dashboard')
+    @app.route('/a2a_dashboard')
     @login_required
     def a2a_dashboard():
         """View and manage A2A protocol integration"""
@@ -2461,6 +2475,7 @@ def create_agent():
 def agent_detail(agent_id):
     """View AI agent details"""
     from modules.crypto_wallet import CryptoWalletManager
+    # Import directly from defi_lending module
     from modules.defi_lending import DefiLendingManager
     from datetime import datetime, timedelta
     
